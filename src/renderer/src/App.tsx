@@ -5,7 +5,7 @@ import { Dashboard } from './components/Dashboard'
 
 const App = () => {
   return (
-    <div className="flex h-screen w-screen bg-gray-50 text-gray-900 font-sans overflow-hidden">
+    <div className="flex h-screen w-screen bg-gray-50 text-gray-900 font-sans overflow-hidden drag">
       <Sidebar />
       <div className="flex-1 flex flex-col h-full overflow-hidden">
         <Header />

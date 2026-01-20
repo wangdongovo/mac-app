@@ -32,12 +32,10 @@ export function Sidebar() {
     <div className="w-64 bg-gray-50 h-full flex flex-col border-r border-gray-200 p-4 select-none">
       {/* Window Controls */}
       <div className="flex gap-2 mb-8 px-2">
-        <div className="w-3 h-3 rounded-full bg-red-400 hover:bg-red-500 cursor-pointer shadow-sm"></div>
-        <div className="w-3 h-3 rounded-full bg-yellow-400 hover:bg-yellow-500 cursor-pointer shadow-sm"></div>
-        <div className="w-3 h-3 rounded-full bg-green-400 hover:bg-green-500 cursor-pointer shadow-sm"></div>
+        
       </div>
 
-      <div className="flex-1 overflow-y-auto no-scrollbar">
+      <div className="flex-1 overflow-y-auto no-scrollbar no-drag">
         <SidebarSection>
           <SidebarItem icon={LayoutGrid} label="概览" active />
           <SidebarItem icon={Activity} label="流量" />
@@ -70,7 +68,7 @@ export function Sidebar() {
         </div>
 
         {/* User Card */}
-        <div className="bg-gradient-to-br from-blue-100 to-indigo-100 rounded-xl p-3 mb-4 flex items-center gap-3 shadow-sm">
+        <div className="bg-gradient-to-br from-blue-100 to-indigo-100 rounded-xl p-3 mb-4 flex items-center gap-3 shadow-sm no-drag">
           <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-lg shadow-sm">
             jzb
           </div>

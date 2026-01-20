@@ -11,7 +11,7 @@ export function Card({ children, className, noPadding = false, ...props }: CardP
   return (
     <div 
       className={cn(
-        "bg-white rounded-2xl shadow-sm border border-gray-100 flex flex-col", 
+        "bg-white rounded-2xl shadow-sm border border-gray-100 flex flex-col no-drag", 
         !noPadding && "p-4",
         className
       )} 

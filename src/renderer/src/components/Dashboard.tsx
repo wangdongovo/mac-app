@@ -7,7 +7,7 @@ import { LeaderboardWidget } from './dashboard/LeaderboardWidget';
 
 export function Dashboard() {
   return (
-    <div className="p-6 h-full overflow-y-auto no-scrollbar">
+    <div className="p-6 h-full overflow-y-auto no-scrollbar no-drag">
       <div className="grid grid-cols-2 gap-4 auto-rows-fr">
         
         {/* Row 1 */}
