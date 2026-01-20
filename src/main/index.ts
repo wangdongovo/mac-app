@@ -27,6 +27,7 @@ const createWindow = () => {
     width: 800,
     height: 600,
     titleBarStyle: 'hiddenInset',
+    trafficLightPosition: { x: 14, y: 14 },
     frame: false,
     transparent: true,
     webPreferences: {
