@@ -39,11 +39,13 @@
     "eslint": "^8.57.1",
     "eslint-plugin-import": "^2.32.0",
     "typescript": "^5.9.3",
-    "vite": "^5.4.21"
+    "vite": "^7.3.1"
   },
   "dependencies": {
+    "@tailwindcss/vite": "^4.1.18",
     "electron-squirrel-startup": "^1.0.1",
     "react": "^19.2.3",
-    "react-dom": "^19.2.3"
+    "react-dom": "^19.2.3",
+    "tailwindcss": "^4.1.18"
   }
 }
