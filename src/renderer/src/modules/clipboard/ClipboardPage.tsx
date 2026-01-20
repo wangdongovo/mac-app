@@ -1,8 +1,8 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Card } from '../../components/Card';
 import { 
   Search, Plus, 
-  Copy, Calendar, CheckCircle2, Circle, Check, Pencil, Trash2, ChevronDown
+  Copy, Calendar, CheckCircle2, Circle, Check, Pencil, Trash2, ChevronDown, ChevronLeft, ChevronRight
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -17,13 +17,6 @@ interface ClipboardItem {
   createdAt: string;
 }
 
-const MOCK_DATA: ClipboardItem[] = [
-  { id: '1', name: 'API Key Production', content: 'sk-prod-1234567890abcdef', tag: 'Secrets', status: 'Active', createdAt: '2023-10-01' },
-  { id: '2', name: 'Meeting Notes Template', content: '# Meeting Notes\nDate:\nAttendees:', tag: 'Templates', status: 'Active', createdAt: '2023-10-05' },
-  { id: '3', name: 'SQL Connect String', content: 'postgres://user:pass@localhost:5432/db', tag: 'Dev', status: 'Active', createdAt: '2023-10-12' },
-  { id: '4', name: 'Signature HTML', content: '<div>Best regards,<br>John Doe</div>', tag: 'Personal', status: 'Archived', createdAt: '2023-10-15' },
-];
-
 const TAG_COLORS: Record<string, string> = {
   'Secrets': 'bg-red-100 text-red-700 border-red-200',
   'Templates': 'bg-blue-100 text-blue-700 border-blue-200',
@@ -33,8 +26,14 @@ const TAG_COLORS: Record<string, string> = {
 };
 
 export function ClipboardPage() {
-  const [items, setItems] = useState<ClipboardItem[]>(MOCK_DATA);
+  const [items, setItems] = useState<ClipboardItem[]>(() => {
+    const saved = localStorage.getItem('clipboard-items');
+    return saved ? JSON.parse(saved) : [];
+  });
   const [searchQuery, setSearchQuery] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [isPerPageDropdownOpen, setIsPerPageDropdownOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('All');
   const [statusFilter, setStatusFilter] = useState<'All' | 'Active' | 'Archived'>('All');
@@ -46,6 +45,11 @@ export function ClipboardPage() {
   const [newItemName, setNewItemName] = useState('');
   const [newItemContent, setNewItemContent] = useState('');
   const [newItemTag, setNewItemTag] = useState('General');
+
+  // Persist items to localStorage
+  useEffect(() => {
+    localStorage.setItem('clipboard-items', JSON.stringify(items));
+  }, [items]);
 
   // Extract all unique tags
   const allTags = useMemo(() => {
@@ -67,6 +71,19 @@ export function ClipboardPage() {
       return matchesSearch && matchesTab && matchesStatus;
     });
   }, [items, searchQuery, activeTab, statusFilter]);
+
+  // Pagination Logic
+  const totalPages = Math.ceil(filteredItems.length / itemsPerPage) || 1;
+  
+  const paginatedItems = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return filteredItems.slice(startIndex, startIndex + itemsPerPage);
+  }, [filteredItems, currentPage, itemsPerPage]);
+
+  // Reset to first page when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, activeTab, statusFilter, itemsPerPage]);
 
   const handleCopy = async (content: string, id: string) => {
     try {
@@ -205,11 +222,11 @@ export function ClipboardPage() {
       <Card className="flex-1 overflow-hidden flex flex-col shadow-sm border-gray-200" noPadding>
         {/* Table Header */}
         <div className="w-full flex items-center bg-gray-50/50 border-b border-gray-100 px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider gap-2">
-          <div className="flex-1 min-w-0">名称 / 内容</div>
-          <div className="w-24 flex-none">标签</div>
-          <div className="w-20 flex-none">状态</div>
-          <div className="w-28 flex-none">创建时间</div>
-          <div className="w-20 flex-none text-center">操作</div>
+          <div className="flex-[3] flex justify-center text-center min-w-0">名称 / 内容</div>
+          <div className="flex-1 flex justify-center text-center min-w-0">标签</div>
+          <div className="flex-1 flex justify-center text-center min-w-0">状态</div>
+          <div className="flex-[1.5] flex justify-center text-center min-w-0">创建时间</div>
+          <div className="flex-1 flex justify-center text-center min-w-0">操作</div>
         </div>
 
         {/* Table Body */}
@@ -220,7 +237,7 @@ export function ClipboardPage() {
               <p>未找到记录</p>
             </div>
           ) : (
-            filteredItems.map((item) => (
+            paginatedItems.map((item) => (
               <motion.div 
                 layout
                 initial={{ opacity: 0, y: 10 }}
@@ -231,12 +248,12 @@ export function ClipboardPage() {
                   "w-full flex items-center border-b border-gray-50 hover:bg-gray-50/80 transition-colors group px-4 py-3 text-sm gap-2"
                 )}
               >
-                <div className="flex-1 min-w-0 flex flex-col justify-center">
-                  <div className="font-medium text-gray-900 truncate">{item.name}</div>
+                <div className="flex-[3] flex flex-col justify-center items-center text-center min-w-0">
+                  <div className="font-medium text-gray-900 truncate w-full">{item.name}</div>
                   <div className="text-xs text-gray-500 truncate mt-0.5 max-w-[90%]">{item.content}</div>
                 </div>
 
-                <div className="w-24 flex-none flex items-center">
+                <div className="flex-1 flex justify-center items-center min-w-0">
                   <span className={cn(
                     "px-2.5 py-0.5 rounded-full text-xs font-medium border truncate max-w-full",
                     TAG_COLORS[item.tag] || TAG_COLORS['default']
@@ -245,8 +262,8 @@ export function ClipboardPage() {
                   </span>
                 </div>
 
-                <div className="w-20 flex-none flex items-center">
-                  <div className="flex items-center gap-1.5 truncate w-full">
+                <div className="flex-1 flex justify-center items-center min-w-0">
+                  <div className="flex justify-center items-center gap-1.5 truncate w-full">
                     {item.status === 'Active' ? (
                       <CheckCircle2 className="w-3.5 h-3.5 text-green-500 flex-shrink-0" />
                     ) : (
@@ -259,12 +276,12 @@ export function ClipboardPage() {
                   </div>
                 </div>
 
-                <div className="w-28 flex-none text-gray-500 text-xs flex items-center gap-1">
+                <div className="flex-[1.5] flex justify-center items-center gap-1 text-gray-500 text-xs min-w-0">
                    <Calendar className="w-3 h-3 flex-shrink-0" />
                    <span className="truncate">{item.createdAt}</span>
                 </div>
 
-                <div className="w-20 flex-none flex justify-center items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity no-drag">
+                <div className="flex-1 flex justify-center items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity no-drag min-w-0">
                   <button 
                     onClick={() => handleCopy(item.content, item.id)}
                     className="p-1.5 hover:bg-gray-200 rounded-lg text-gray-500 hover:text-blue-600 transition-colors"
@@ -296,20 +313,70 @@ export function ClipboardPage() {
           )}
         </div>
         
-        {/* Pagination Footer (Visual Only) */}
+        {/* Pagination Footer */}
         <div className="border-t border-gray-100 p-3 bg-gray-50/50 flex items-center justify-between text-xs text-gray-500">
-           <div>共 {items.length} 条</div>
-           <div className="flex items-center gap-2">
-             <span>每页显示</span>
-             <select className="bg-transparent border border-gray-200 rounded p-1 text-xs no-drag">
-               <option>10</option>
-               <option>20</option>
-               <option>50</option>
-             </select>
-             <div className="flex items-center gap-1 ml-4">
-                <button className="px-2 py-1 hover:bg-gray-200 rounded disabled:opacity-50 no-drag" disabled>上一页</button>
-                <span>第 1 页 / 共 1 页</span>
-                <button className="px-2 py-1 hover:bg-gray-200 rounded disabled:opacity-50 no-drag" disabled>下一页</button>
+           <div>共 {filteredItems.length} 条</div>
+           <div className="flex items-center gap-4">
+             <div className="flex items-center gap-2">
+               <span>每页显示</span>
+               <div className="relative no-drag">
+                  <button
+                    onClick={() => setIsPerPageDropdownOpen(!isPerPageDropdownOpen)}
+                    className="flex items-center gap-1.5 bg-white border border-gray-200 rounded px-2 py-1 text-xs text-gray-600 hover:border-gray-300 transition-all shadow-sm focus:outline-none"
+                  >
+                    <span>{itemsPerPage}</span>
+                    <ChevronDown className="w-3 h-3 text-gray-400" />
+                  </button>
+                  
+                  <AnimatePresence>
+                    {isPerPageDropdownOpen && (
+                      <>
+                        <div 
+                          className="fixed inset-0 z-10" 
+                          onClick={() => setIsPerPageDropdownOpen(false)} 
+                        />
+                        <motion.div
+                          initial={{ opacity: 0, y: 5 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: 5 }}
+                          className="absolute bottom-full right-0 mb-1 w-16 bg-white border border-gray-100 rounded-lg shadow-lg py-1 z-20 overflow-hidden"
+                        >
+                          {[10, 20, 50].map(num => (
+                            <button
+                              key={num}
+                              onClick={() => {
+                                setItemsPerPage(num);
+                                setIsPerPageDropdownOpen(false);
+                              }}
+                              className="w-full text-left px-3 py-1.5 text-xs text-gray-600 hover:bg-gray-50 flex items-center justify-between transition-colors"
+                            >
+                              <span>{num}</span>
+                              {itemsPerPage === num && <Check className="w-3 h-3 text-blue-500" />}
+                            </button>
+                          ))}
+                        </motion.div>
+                      </>
+                    )}
+                  </AnimatePresence>
+               </div>
+             </div>
+             
+             <div className="flex items-center gap-2">
+                <button 
+                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                  disabled={currentPage === 1}
+                  className="p-1 hover:bg-gray-200 rounded disabled:opacity-30 disabled:hover:bg-transparent transition-colors no-drag"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <span className="min-w-[3rem] text-center">第 {currentPage} / {totalPages} 页</span>
+                <button 
+                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                  disabled={currentPage === totalPages}
+                  className="p-1 hover:bg-gray-200 rounded disabled:opacity-30 disabled:hover:bg-transparent transition-colors no-drag"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
              </div>
            </div>
         </div>
