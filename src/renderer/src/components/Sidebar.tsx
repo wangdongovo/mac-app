@@ -15,7 +15,7 @@ const SidebarItem = ({ icon: Icon, label, path, collapsed = false }: { icon: any
 
   return (
     <div className={cn(
-      "flex items-center gap-3 px-4 py-2 rounded-lg cursor-pointer text-sm font-medium transition-colors",
+      "flex items-center gap-3 px-4 py-2 rounded-lg cursor-pointer text-sm transition-colors",
       active ? "bg-gray-200 text-gray-900" : "text-gray-500 hover:bg-gray-100 hover:text-gray-900",
       collapsed && "justify-center px-2"
     )}
