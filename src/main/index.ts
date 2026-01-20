@@ -123,8 +123,10 @@ if (started) {
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1100,
+    height: 800,
+    minWidth: 1100,
+    minHeight: 800,
     titleBarStyle: 'hiddenInset',
     trafficLightPosition: { x: 14, y: 14 },
     frame: false,
