@@ -48,7 +48,7 @@ export function Sidebar() {
       "bg-gray-50 h-full flex flex-col p-2 select-none transition-all duration-300 ease-in-out",
       isCollapsed ? "w-20" : "w-64"
     )}>
-      <div className="flex-1 no-scrollbar no-drag bg-white p-2 rounded-2xl flex flex-col">
+      <div className="flex-1 no-scrollbar no-drag bg-white p-2 rounded-2xl flex flex-col shadow-md">
         {/* Header with Traffic Lights placeholder and Toggle Button */}
         <div className="h-10 flex items-center justify-end px-2 mb-2 relative">
              <button 
