@@ -23,10 +23,10 @@ export function OverviewPage() {
         <h1 className="text-2xl font-bold text-gray-800">设备概览</h1>
       </div>
 
-      <div className="grid grid-cols-1">
+      <div className="grid grid-cols-1 rounded-2xl">
         
         {/* Computer Config / System Info */}
-        <div className="bg-white p-6">
+        <div className="bg-white p-6 ">
           <h2 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
             <Server className="w-5 h-5 text-gray-500" />
             电脑配置
@@ -58,7 +58,7 @@ export function OverviewPage() {
         </div>
 
         {/* Network Status */}
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+        <div className="bg-white p-6 ">
           <h2 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
             <Network className="w-5 h-5 text-gray-500" />
             网络状态
@@ -97,7 +97,7 @@ export function OverviewPage() {
         </div>
 
         {/* Development Environment */}
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+        <div className="bg-white p-6 ">
           <h2 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
             <Terminal className="w-5 h-5 text-gray-500" />
             开发环境
