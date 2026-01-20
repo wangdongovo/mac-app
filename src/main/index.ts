@@ -1,6 +1,20 @@
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, ipcMain } from 'electron'
 import path from 'node:path'
+import fs from 'node:fs/promises'
 import started from 'electron-squirrel-startup'
+
+// Setup IPC handlers
+ipcMain.handle('fs:readDir', async (_, dirPath) => {
+  try {
+    const targetPath = dirPath || process.cwd()
+    const files = await fs.readdir(targetPath)
+    return files
+  } catch (error) {
+    console.error('Failed to read directory', error)
+    return []
+  }
+})
+
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
@@ -13,7 +27,7 @@ const createWindow = () => {
     width: 800,
     height: 600,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
+      preload: path.join(__dirname, 'preload.cjs'),
     },
   })
 

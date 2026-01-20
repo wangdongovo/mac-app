@@ -1,7 +1,9 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "module": "commonjs",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -9,7 +11,18 @@
     "sourceMap": true,
     "baseUrl": ".",
     "outDir": "dist",
-    "moduleResolution": "node",
-    "resolveJsonModule": true
-  }
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "paths": {
+      "@/*": ["src/renderer/src/*"],
+      "@common/*": ["src/common/*"]
+    }
+  },
+  "include": [
+    "src/**/*",
+    "forge.env.d.ts",
+    "vite.renderer.config.ts",
+    "vite.main.config.ts",
+    "vite.preload.config.ts"
+  ]
 }
