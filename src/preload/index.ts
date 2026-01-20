@@ -9,4 +9,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   fs: {
     readDir: (path: string) => ipcRenderer.invoke('fs:readDir', path),
   },
+  system: {
+    getOverview: () => ipcRenderer.invoke('system:getOverview'),
+  },
 });

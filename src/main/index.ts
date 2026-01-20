@@ -1,7 +1,12 @@
 import { app, BrowserWindow, ipcMain } from 'electron'
 import path from 'node:path'
 import fs from 'node:fs/promises'
+import os from 'node:os'
+import { exec } from 'node:child_process'
+import util from 'node:util'
 import started from 'electron-squirrel-startup'
+
+const execAsync = util.promisify(exec)
 
 // Setup IPC handlers
 ipcMain.handle('fs:readDir', async (_, dirPath) => {
@@ -12,6 +17,100 @@ ipcMain.handle('fs:readDir', async (_, dirPath) => {
   } catch (error) {
     console.error('Failed to read directory', error)
     return []
+  }
+})
+
+ipcMain.handle('system:getOverview', async () => {
+  try {
+    // 1. Serial Number (macOS)
+    let serialNumber = 'Unknown'
+    try {
+      const { stdout } = await execAsync('ioreg -l | grep IOPlatformSerialNumber')
+      const match = stdout.match(/"IOPlatformSerialNumber"\s*=\s*"(.+)"/)
+      if (match && match[1]) {
+        serialNumber = match[1]
+      }
+    } catch (e) {
+      console.error('Failed to get serial number', e)
+    }
+
+    // 2. Network Info
+    let ip = 'Unknown'
+    const interfaces = os.networkInterfaces()
+    for (const name of Object.keys(interfaces)) {
+      for (const iface of interfaces[name] || []) {
+        if (iface.family === 'IPv4' && !iface.internal) {
+          ip = iface.address
+          break
+        }
+      }
+      if (ip !== 'Unknown') break
+    }
+
+    let gateway = 'Unknown'
+    try {
+      const { stdout } = await execAsync('route -n get default')
+      const match = stdout.match(/gateway:\s+(.+)/)
+      if (match && match[1]) gateway = match[1]
+    } catch (e) {
+        // ignore
+    }
+
+    const dns: string[] = []
+    try {
+      const { stdout } = await execAsync('scutil --dns')
+      const matches = stdout.matchAll(/nameserver\[\d+\]\s*:\s*(.+)/g)
+      for (const m of matches) {
+        if (!dns.includes(m[1])) dns.push(m[1])
+      }
+    } catch (e) {
+        // ignore
+    }
+
+    // 3. Node/NPM
+    let nodeVersion = 'Unknown'
+    let npmVersion = 'Unknown'
+    let npmRegistry = 'Unknown'
+
+    const env = { ...process.env, PATH: '/usr/local/bin:/opt/homebrew/bin:' + (process.env.PATH || '') }
+
+    try {
+      const { stdout } = await execAsync('node -v', { env })
+      nodeVersion = stdout.trim()
+    } catch (e) {
+        // ignore
+    }
+
+    try {
+      const { stdout } = await execAsync('npm -v', { env })
+      npmVersion = stdout.trim()
+    } catch (e) {
+        // ignore
+    }
+
+    try {
+      const { stdout } = await execAsync('npm config get registry', { env })
+      npmRegistry = stdout.trim()
+    } catch (e) {
+        // ignore
+    }
+
+    return {
+      serialNumber,
+      network: {
+        ip,
+        gateway,
+        dns,
+      },
+      devEnv: {
+        nodeVersion,
+        npmVersion,
+        npmRegistry,
+      },
+    }
+  } catch (error) {
+    console.error('System info error', error)
+    throw error
   }
 })
 
