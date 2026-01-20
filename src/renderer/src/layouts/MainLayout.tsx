@@ -27,7 +27,7 @@ export function MainLayout() {
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
               className={cn(
                 "p-2 hover:bg-gray-200 rounded-lg text-gray-600 transition-colors cursor-pointer",
-                !isSidebarOpen && "bg-gray-200"
+                !isSidebarOpen && ""
               )}
             >
               <PanelLeft className="w-5 h-5" />

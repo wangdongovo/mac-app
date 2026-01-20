@@ -5,7 +5,8 @@ import {
   Globe, List, Package, 
   Layers, Sliders, 
   GitGraph, Send, 
-  Info, Settings
+  Info, Settings,
+  ClipboardList
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 
@@ -63,6 +64,7 @@ export function Sidebar({ isOpen }: { isOpen: boolean }) {
             <SidebarItem icon={Activity} label="流量" path="/traffic" />
             <SidebarItem icon={Network} label="连接" path="/connections" />
             <SidebarItem icon={FileText} label="日志" path="/logs" />
+            <SidebarItem icon={ClipboardList} label="剪贴板" path="/clipboard" />
           </SidebarSection>
 
           <SidebarSection title="代理">
