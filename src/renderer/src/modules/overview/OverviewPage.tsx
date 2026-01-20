@@ -1,55 +1,60 @@
-import { Monitor, Globe } from 'lucide-react';
-import { StatusWidget } from './components/StatusWidget';
-import { TrafficRealtimeWidget } from './components/TrafficRealtimeWidget';
-import { TrafficTrendWidget } from './components/TrafficTrendWidget';
-import { TrafficSummaryWidget } from './components/TrafficSummaryWidget';
-import { LeaderboardWidget } from './components/LeaderboardWidget';
+
+
+import { LayoutGrid } from 'lucide-react';
 
 export function OverviewPage() {
   return (
     <div className="p-6 h-full overflow-y-auto no-scrollbar no-drag">
-      <div className="grid grid-cols-2 gap-4 auto-rows-fr">
+      <div className="flex items-center gap-2 mb-6">
+        <LayoutGrid className="w-6 h-6 text-blue-500" />
+        <h1 className="text-2xl font-bold text-gray-800">设备概览</h1>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 col-span-full">
+          <h2 className="text-lg font-semibold text-gray-700 mb-4">系统状态</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+             <div className="p-4 bg-gray-50 rounded-xl">
+                <div className="text-sm text-gray-500 mb-1">运行时间</div>
+                <div className="text-xl font-bold text-gray-900">2天 4小时</div>
+             </div>
+             <div className="p-4 bg-gray-50 rounded-xl">
+                <div className="text-sm text-gray-500 mb-1">CPU 使用率</div>
+                <div className="text-xl font-bold text-gray-900">12%</div>
+             </div>
+             <div className="p-4 bg-gray-50 rounded-xl">
+                <div className="text-sm text-gray-500 mb-1">内存使用</div>
+                <div className="text-xl font-bold text-gray-900">4.2 GB</div>
+             </div>
+             <div className="p-4 bg-gray-50 rounded-xl">
+                <div className="text-sm text-gray-500 mb-1">网络状态</div>
+                <div className="text-xl font-bold text-green-500">在线</div>
+             </div>
+          </div>
+        </div>
         
-        {/* Row 1 */}
-        <StatusWidget 
-          title="运行状态" 
-          icon={Monitor}
-          metrics={[
-            { label: '运行时长', value: '5:02', color: 'text-blue-500' },
-            { label: '连接数', value: '16', color: 'text-orange-500' },
-            { label: '内存', value: '33 MB', color: 'text-teal-500' },
-          ]}
-          details={[
-            { label: '状态', value: '已连接', indicator: 'bg-green-500' },
-            { label: '内核', value: 'Smart', indicator: 'bg-purple-500' },
-            { label: '系统', value: 'macOS 26.3' }, 
-            { label: '版本', value: '26.5 (125)' },
-          ]}
-        />
-        
-        <StatusWidget 
-          title="网络状态" 
-          icon={Globe}
-          metrics={[
-            { label: '互联网', value: '403 ms', color: 'text-orange-500' },
-            { label: 'DNS', value: '-', color: 'text-gray-400' },
-            { label: '路由', value: '5 ms', color: 'text-green-500' },
-          ]}
-          details={[
-            { label: '网络', value: 'Wi-Fi', indicator: 'bg-blue-500' },
-            { label: '本地 IP', value: 'CN 深圳 ....168.28.236', indicator: 'bg-indigo-500' }, 
-            { label: '代理 IP', value: 'US San Jo...4.21.32.100', indicator: 'bg-green-500' },
-          ]}
-        />
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+          <h2 className="text-lg font-semibold text-gray-700 mb-4">快捷操作</h2>
+          <div className="space-y-3">
+             <button className="w-full py-2 px-4 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors font-medium text-sm text-left">
+               更新订阅
+             </button>
+             <button className="w-full py-2 px-4 bg-gray-50 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors font-medium text-sm text-left">
+               清除缓存
+             </button>
+          </div>
+        </div>
 
-        {/* Row 2 */}
-        <TrafficRealtimeWidget />
-        <TrafficTrendWidget />
-
-        {/* Row 3 */}
-        <TrafficSummaryWidget />
-        <LeaderboardWidget />
-        
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+          <h2 className="text-lg font-semibold text-gray-700 mb-4">今日流量</h2>
+          <div className="flex items-end gap-2 mb-2">
+            <span className="text-3xl font-bold text-gray-900">1.2</span>
+            <span className="text-gray-500 mb-1">GB</span>
+          </div>
+          <div className="w-full bg-gray-100 rounded-full h-2 mb-2">
+            <div className="bg-blue-500 h-2 rounded-full" style={{ width: '45%' }}></div>
+          </div>
+          <div className="text-xs text-gray-400">总限额: 100 GB</div>
+        </div>
       </div>
     </div>
   )

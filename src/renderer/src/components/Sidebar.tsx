@@ -1,12 +1,10 @@
-import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   LayoutGrid, Activity, Network, FileText, 
   Globe, List, Package, 
   Layers, Sliders, 
   GitGraph, Send, 
-  Info, Settings,
-  User, PanelLeft
+  Info, Settings
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 
@@ -40,52 +38,39 @@ const SidebarSection = ({ title, children, collapsed }: { title?: string, childr
   </div>
 );
 
-export function Sidebar() {
-  const [isCollapsed, setIsCollapsed] = useState(false);
-
+export function Sidebar({ isOpen }: { isOpen: boolean }) {
   return (
     <div className={cn(
-      "bg-gray-50 h-full flex flex-col p-2 select-none transition-all duration-300 ease-in-out",
-      isCollapsed ? "w-20" : "w-64"
+      "bg-gray-50 h-full flex flex-col select-none transition-all duration-300 ease-in-out",
+      isOpen ? "w-64 p-2" : "w-0 p-0 overflow-hidden opacity-0"
     )}>
-      <div className="flex-1 no-scrollbar no-drag bg-white p-2 rounded-2xl flex flex-col shadow-md">
-        {/* Header with Traffic Lights placeholder and Toggle Button */}
-        <div className="h-10 flex items-center justify-end px-2 mb-2 relative">
-             <button 
-                onClick={() => setIsCollapsed(!isCollapsed)}
-                className="p-1.5 hover:bg-gray-100 rounded-md text-gray-500 transition-colors no-drag"
-             >
-                <PanelLeft className="w-4 h-4" />
-             </button>
-        </div>
-
+      <div className="flex-1 no-scrollbar no-drag bg-white p-2 rounded-2xl flex flex-col shadow-md min-w-[15rem]">
+        <div className="h-8 drag w-full shrink-0" />
         <div className="flex-1 overflow-y-auto no-scrollbar">
-          <SidebarSection collapsed={isCollapsed}>
-            <SidebarItem icon={LayoutGrid} label="概览" path="/overview" collapsed={isCollapsed} />
-            <SidebarItem icon={Activity} label="流量" path="/traffic" collapsed={isCollapsed} />
-            <SidebarItem icon={Network} label="连接" path="/connections" collapsed={isCollapsed} />
-            <SidebarItem icon={FileText} label="日志" path="/logs" collapsed={isCollapsed} />
+          <SidebarSection>
+            <SidebarItem icon={LayoutGrid} label="概览" path="/overview" />
+            <SidebarItem icon={Activity} label="流量" path="/traffic" />
+            <SidebarItem icon={Network} label="连接" path="/connections" />
+            <SidebarItem icon={FileText} label="日志" path="/logs" />
           </SidebarSection>
 
-          <SidebarSection title="代理" collapsed={isCollapsed}>
-            <SidebarItem icon={Globe} label="代理" path="/proxies" collapsed={isCollapsed} />
-            <SidebarItem icon={List} label="规则" path="/rules" collapsed={isCollapsed} />
-            <SidebarItem icon={Package} label="资源" path="/resources" collapsed={isCollapsed} />
+          <SidebarSection title="代理">
+            <SidebarItem icon={Globe} label="代理" path="/proxies" />
+            <SidebarItem icon={List} label="规则" path="/rules" />
+            <SidebarItem icon={Package} label="资源" path="/resources" />
           </SidebarSection>
 
-          <SidebarSection title="设置" collapsed={isCollapsed}>
-            <SidebarItem icon={Layers} label="配置" path="/config" collapsed={isCollapsed} />
-            <SidebarItem icon={Sliders} label="高级" path="/advanced" collapsed={isCollapsed} />
+          <SidebarSection title="设置">
+            <SidebarItem icon={Layers} label="配置" path="/config" />
+            <SidebarItem icon={Sliders} label="高级" path="/advanced" />
           </SidebarSection>
 
-          <SidebarSection title="实验" collapsed={isCollapsed}>
-            <SidebarItem icon={GitGraph} label="拓扑" path="/topology" collapsed={isCollapsed} />
-            <SidebarItem icon={Send} label="航线" path="/routes" collapsed={isCollapsed} />
+          <SidebarSection title="实验">
+            <SidebarItem icon={GitGraph} label="拓扑" path="/topology" />
+            <SidebarItem icon={Send} label="航线" path="/routes" />
           </SidebarSection>
         </div>
       </div>
-
-      
     </div>
   );
 }
