@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { Card } from '../../components/Card';
 import { 
   Search, Plus, 
-  Copy, Calendar, CheckCircle2, Circle, Check, Pencil, Trash2
+  Copy, Calendar, CheckCircle2, Circle, Check, Pencil, Trash2, ChevronDown
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -38,6 +38,7 @@ export function ClipboardPage() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('All');
   const [statusFilter, setStatusFilter] = useState<'All' | 'Active' | 'Archived'>('All');
+  const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [editingItem, setEditingItem] = useState<ClipboardItem | null>(null);
   
@@ -134,16 +135,52 @@ export function ClipboardPage() {
           </div>
           
           <div className="flex items-center gap-3">
-            <select 
-              className="bg-white border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all shadow-sm text-gray-600"
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value as 'All' | 'Active' | 'Archived')}
-            >
-              <option value="All">全部状态</option>
-              <option value="Active">活跃</option>
-              <option value="Archived">归档</option>
-            </select>
-             <div className="relative group">
+            {/* Status Filter Dropdown */}
+            <div className="relative no-drag">
+              <button
+                onClick={() => setIsStatusDropdownOpen(!isStatusDropdownOpen)}
+                className="flex items-center gap-2 bg-white border border-gray-200 rounded-xl px-3 py-2 text-sm text-gray-600 hover:border-gray-300 transition-all shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+              >
+                <span>
+                  {statusFilter === 'All' ? '全部状态' :
+                   statusFilter === 'Active' ? '活跃' : '归档'}
+                </span>
+                <ChevronDown className="w-4 h-4 text-gray-400" />
+              </button>
+              
+              <AnimatePresence>
+                {isStatusDropdownOpen && (
+                  <>
+                    <div 
+                      className="fixed inset-0 z-10" 
+                      onClick={() => setIsStatusDropdownOpen(false)} 
+                    />
+                    <motion.div
+                      initial={{ opacity: 0, y: 5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 5 }}
+                      className="absolute right-0 top-full mt-2 w-32 bg-white border border-gray-100 rounded-xl shadow-lg py-1 z-20 overflow-hidden"
+                    >
+                      {['All', 'Active', 'Archived'].map(status => (
+                        <button
+                          key={status}
+                          onClick={() => {
+                            setStatusFilter(status as any);
+                            setIsStatusDropdownOpen(false);
+                          }}
+                          className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 flex items-center justify-between transition-colors"
+                        >
+                          <span>{status === 'All' ? '全部状态' : status === 'Active' ? '活跃' : '归档'}</span>
+                          {statusFilter === status && <Check className="w-3 h-3 text-blue-500" />}
+                        </button>
+                      ))}
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
+            </div>
+
+            <div className="relative group no-drag">
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
               <input 
                 type="text" 
@@ -155,7 +192,7 @@ export function ClipboardPage() {
             </div>
             <button 
               onClick={() => setIsAddModalOpen(true)}
-              className="flex items-center gap-2 bg-gray-900 hover:bg-gray-800 text-white px-4 py-2 rounded-xl text-sm font-medium transition-all shadow-lg shadow-gray-900/10 active:scale-95"
+              className="flex items-center gap-2 bg-gray-900 hover:bg-gray-800 text-white px-4 py-2 rounded-xl text-sm font-medium transition-all shadow-lg shadow-gray-900/10 active:scale-95 no-drag"
             >
               <Plus className="w-4 h-4" />
               新增记录
@@ -167,19 +204,19 @@ export function ClipboardPage() {
       {/* Table Card */}
       <Card className="flex-1 overflow-hidden flex flex-col shadow-sm border-gray-200" noPadding>
         {/* Table Header */}
-        <div className="grid grid-cols-[2fr_1fr_1fr_1fr_4rem] items-center bg-gray-50/50 border-b border-gray-100 p-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-          <div className="px-2 flex items-center">名称 / 内容</div>
-          <div className="px-2 flex items-center">标签</div>
-          <div className="px-2 flex items-center">状态</div>
-          <div className="px-2 flex items-center">创建时间</div>
-          <div className="flex justify-center items-center">操作</div>
+        <div className="w-full flex items-center bg-gray-50/50 border-b border-gray-100 px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider gap-2">
+          <div className="flex-1 min-w-0">名称 / 内容</div>
+          <div className="w-24 flex-none">标签</div>
+          <div className="w-20 flex-none">状态</div>
+          <div className="w-28 flex-none">创建时间</div>
+          <div className="w-20 flex-none text-center">操作</div>
         </div>
 
         {/* Table Body */}
         <div className="flex-1 overflow-y-auto">
           {filteredItems.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-48 text-gray-400">
-              <Search className="w-12 h-12 mb-2 opacity-20" />
+             
               <p>未找到记录</p>
             </div>
           ) : (
@@ -191,43 +228,43 @@ export function ClipboardPage() {
                 exit={{ opacity: 0, scale: 0.95 }}
                 key={item.id}
                 className={cn(
-                  "grid grid-cols-[2fr_1fr_1fr_1fr_4rem] items-center border-b border-gray-50 hover:bg-gray-50/80 transition-colors group py-3 text-sm"
+                  "w-full flex items-center border-b border-gray-50 hover:bg-gray-50/80 transition-colors group px-4 py-3 text-sm gap-2"
                 )}
               >
-                <div className="px-2 min-w-0 flex flex-col justify-center h-full">
+                <div className="flex-1 min-w-0 flex flex-col justify-center">
                   <div className="font-medium text-gray-900 truncate">{item.name}</div>
                   <div className="text-xs text-gray-500 truncate mt-0.5 max-w-[90%]">{item.content}</div>
                 </div>
 
-                <div className="px-2 flex items-center h-full">
+                <div className="w-24 flex-none flex items-center">
                   <span className={cn(
-                    "px-2.5 py-0.5 rounded-full text-xs font-medium border",
+                    "px-2.5 py-0.5 rounded-full text-xs font-medium border truncate max-w-full",
                     TAG_COLORS[item.tag] || TAG_COLORS['default']
                   )}>
                     {item.tag}
                   </span>
                 </div>
 
-                <div className="px-2 flex items-center h-full">
-                  <div className="flex items-center gap-1.5">
+                <div className="w-20 flex-none flex items-center">
+                  <div className="flex items-center gap-1.5 truncate w-full">
                     {item.status === 'Active' ? (
-                      <CheckCircle2 className="w-3.5 h-3.5 text-green-500" />
+                      <CheckCircle2 className="w-3.5 h-3.5 text-green-500 flex-shrink-0" />
                     ) : (
-                      <Circle className="w-3.5 h-3.5 text-gray-400" />
+                      <Circle className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
                     )}
                     <span className={cn(
-                      "text-xs font-medium",
+                      "text-xs font-medium truncate",
                       item.status === 'Active' ? "text-gray-700" : "text-gray-500"
                     )}>{item.status}</span>
                   </div>
                 </div>
 
-                <div className="px-2 text-gray-500 text-xs flex items-center gap-1 h-full">
-                   <Calendar className="w-3 h-3" />
-                   {item.createdAt}
+                <div className="w-28 flex-none text-gray-500 text-xs flex items-center gap-1">
+                   <Calendar className="w-3 h-3 flex-shrink-0" />
+                   <span className="truncate">{item.createdAt}</span>
                 </div>
 
-                <div className="flex justify-center items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity h-full">
+                <div className="w-20 flex-none flex justify-center items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity no-drag">
                   <button 
                     onClick={() => handleCopy(item.content, item.id)}
                     className="p-1.5 hover:bg-gray-200 rounded-lg text-gray-500 hover:text-blue-600 transition-colors"
@@ -264,15 +301,15 @@ export function ClipboardPage() {
            <div>共 {items.length} 条</div>
            <div className="flex items-center gap-2">
              <span>每页显示</span>
-             <select className="bg-transparent border border-gray-200 rounded p-1 text-xs">
+             <select className="bg-transparent border border-gray-200 rounded p-1 text-xs no-drag">
                <option>10</option>
                <option>20</option>
                <option>50</option>
              </select>
              <div className="flex items-center gap-1 ml-4">
-                <button className="px-2 py-1 hover:bg-gray-200 rounded disabled:opacity-50" disabled>上一页</button>
+                <button className="px-2 py-1 hover:bg-gray-200 rounded disabled:opacity-50 no-drag" disabled>上一页</button>
                 <span>第 1 页 / 共 1 页</span>
-                <button className="px-2 py-1 hover:bg-gray-200 rounded disabled:opacity-50" disabled>下一页</button>
+                <button className="px-2 py-1 hover:bg-gray-200 rounded disabled:opacity-50 no-drag" disabled>下一页</button>
              </div>
            </div>
         </div>
