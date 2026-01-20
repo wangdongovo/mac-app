@@ -1,11 +1,11 @@
 import { Monitor, Globe } from 'lucide-react';
-import { StatusWidget } from './dashboard/StatusWidget';
-import { TrafficRealtimeWidget } from './dashboard/TrafficRealtimeWidget';
-import { TrafficTrendWidget } from './dashboard/TrafficTrendWidget';
-import { TrafficSummaryWidget } from './dashboard/TrafficSummaryWidget';
-import { LeaderboardWidget } from './dashboard/LeaderboardWidget';
+import { StatusWidget } from './components/StatusWidget';
+import { TrafficRealtimeWidget } from './components/TrafficRealtimeWidget';
+import { TrafficTrendWidget } from './components/TrafficTrendWidget';
+import { TrafficSummaryWidget } from './components/TrafficSummaryWidget';
+import { LeaderboardWidget } from './components/LeaderboardWidget';
 
-export function Dashboard() {
+export function OverviewPage() {
   return (
     <div className="p-6 h-full overflow-y-auto no-scrollbar no-drag">
       <div className="grid grid-cols-2 gap-4 auto-rows-fr">

@@ -1,4 +1,4 @@
-import { Card, CardHeader } from '../Card';
+import { Card, CardHeader } from '../../../components/Card';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import { PieChart as PieChartIcon } from 'lucide-react';
 

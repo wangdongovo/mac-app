@@ -1,4 +1,4 @@
-import { Card, CardHeader } from '../Card';
+import { Card, CardHeader } from '../../../components/Card';
 import { BarChart, Bar, ResponsiveContainer, Cell } from 'recharts';
 import { Calendar } from 'lucide-react';
 

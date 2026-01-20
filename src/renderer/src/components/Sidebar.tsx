@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   LayoutGrid, Activity, Network, FileText, 
   Globe, List, Package, 
@@ -9,18 +10,25 @@ import {
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 
-const SidebarItem = ({ icon: Icon, label, active = false, collapsed = false }: { icon: any, label: string, active?: boolean, collapsed?: boolean }) => (
-  <div className={cn(
-    "flex items-center gap-3 px-4 py-2 rounded-lg cursor-pointer text-sm font-medium transition-colors",
-    active ? "bg-gray-200 text-gray-900" : "text-gray-500 hover:bg-gray-100 hover:text-gray-900",
-    collapsed && "justify-center px-2"
-  )}
-  title={collapsed ? label : undefined}
-  >
-    <Icon className="w-4 h-4" />
-    {!collapsed && <span className="whitespace-nowrap">{label}</span>}
-  </div>
-);
+const SidebarItem = ({ icon: Icon, label, path, collapsed = false }: { icon: any, label: string, path?: string, collapsed?: boolean }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const active = path ? location.pathname.startsWith(path) : false;
+
+  return (
+    <div className={cn(
+      "flex items-center gap-3 px-4 py-2 rounded-lg cursor-pointer text-sm font-medium transition-colors",
+      active ? "bg-gray-200 text-gray-900" : "text-gray-500 hover:bg-gray-100 hover:text-gray-900",
+      collapsed && "justify-center px-2"
+    )}
+    title={collapsed ? label : undefined}
+    onClick={() => path && navigate(path)}
+    >
+      <Icon className="w-4 h-4" />
+      {!collapsed && <span className="whitespace-nowrap">{label}</span>}
+    </div>
+  );
+};
 
 const SidebarSection = ({ title, children, collapsed }: { title?: string, children: React.ReactNode, collapsed?: boolean }) => (
   <div className="mb-4">
@@ -53,26 +61,26 @@ export function Sidebar() {
 
         <div className="flex-1 overflow-y-auto no-scrollbar">
           <SidebarSection collapsed={isCollapsed}>
-            <SidebarItem icon={LayoutGrid} label="概览" active collapsed={isCollapsed} />
-            <SidebarItem icon={Activity} label="流量" collapsed={isCollapsed} />
-            <SidebarItem icon={Network} label="连接" collapsed={isCollapsed} />
-            <SidebarItem icon={FileText} label="日志" collapsed={isCollapsed} />
+            <SidebarItem icon={LayoutGrid} label="概览" path="/overview" collapsed={isCollapsed} />
+            <SidebarItem icon={Activity} label="流量" path="/traffic" collapsed={isCollapsed} />
+            <SidebarItem icon={Network} label="连接" path="/connections" collapsed={isCollapsed} />
+            <SidebarItem icon={FileText} label="日志" path="/logs" collapsed={isCollapsed} />
           </SidebarSection>
 
           <SidebarSection title="代理" collapsed={isCollapsed}>
-            <SidebarItem icon={Globe} label="代理" collapsed={isCollapsed} />
-            <SidebarItem icon={List} label="规则" collapsed={isCollapsed} />
-            <SidebarItem icon={Package} label="资源" collapsed={isCollapsed} />
+            <SidebarItem icon={Globe} label="代理" path="/proxies" collapsed={isCollapsed} />
+            <SidebarItem icon={List} label="规则" path="/rules" collapsed={isCollapsed} />
+            <SidebarItem icon={Package} label="资源" path="/resources" collapsed={isCollapsed} />
           </SidebarSection>
 
           <SidebarSection title="设置" collapsed={isCollapsed}>
-            <SidebarItem icon={Layers} label="配置" collapsed={isCollapsed} />
-            <SidebarItem icon={Sliders} label="高级" collapsed={isCollapsed} />
+            <SidebarItem icon={Layers} label="配置" path="/config" collapsed={isCollapsed} />
+            <SidebarItem icon={Sliders} label="高级" path="/advanced" collapsed={isCollapsed} />
           </SidebarSection>
 
           <SidebarSection title="实验" collapsed={isCollapsed}>
-            <SidebarItem icon={GitGraph} label="拓扑" collapsed={isCollapsed} />
-            <SidebarItem icon={Send} label="航线" collapsed={isCollapsed} />
+            <SidebarItem icon={GitGraph} label="拓扑" path="/topology" collapsed={isCollapsed} />
+            <SidebarItem icon={Send} label="航线" path="/routes" collapsed={isCollapsed} />
           </SidebarSection>
         </div>
       </div>

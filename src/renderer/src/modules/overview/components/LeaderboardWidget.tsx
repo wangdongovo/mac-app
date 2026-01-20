@@ -1,4 +1,4 @@
-import { Card, CardHeader } from '../Card';
+import { Card, CardHeader } from '../../../components/Card';
 import { ListOrdered } from 'lucide-react';
 
 const listData = [

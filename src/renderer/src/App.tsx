@@ -1,20 +1,25 @@
-import React from 'react'
-import { Sidebar } from './components/Sidebar'
-import { Header } from './components/Header'
-import { Dashboard } from './components/Dashboard'
+import React from 'react';
+import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { MainLayout } from './layouts/MainLayout';
+import { OverviewPage } from './modules/overview/OverviewPage';
+import { TrafficPage } from './modules/traffic/TrafficPage';
+import { SettingsPage } from './modules/settings/SettingsPage';
+import { ComingSoon } from './components/ComingSoon';
 
 const App = () => {
   return (
-    <div className="flex h-screen w-screen bg-gray-50 text-gray-900 font-sans overflow-hidden drag">
-      <Sidebar />
-      <div className="flex-1 flex flex-col h-full overflow-hidden">
-        <Header />
-        <main className="flex-1 overflow-hidden relative">
-          <Dashboard />
-        </main>
-      </div>
-    </div>
-  )
-}
+    <HashRouter>
+      <Routes>
+        <Route path="/" element={<MainLayout />}>
+          <Route index element={<Navigate to="/overview" replace />} />
+          <Route path="overview" element={<OverviewPage />} />
+          <Route path="traffic" element={<TrafficPage />} />
+          <Route path="settings" element={<SettingsPage />} />
+          <Route path="*" element={<ComingSoon />} />
+        </Route>
+      </Routes>
+    </HashRouter>
+  );
+};
 
-export default App
+export default App;

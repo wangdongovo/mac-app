@@ -1,4 +1,4 @@
-import { Card, CardHeader } from '../Card';
+import { Card, CardHeader } from '../../../components/Card';
 import { AreaChart, Area, ResponsiveContainer } from 'recharts';
 import { ArrowUp, ArrowDown, Activity } from 'lucide-react';
 
