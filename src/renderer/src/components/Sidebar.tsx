@@ -1,4 +1,5 @@
 import { useNavigate, useLocation } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { 
   LayoutGrid, Activity, Network, FileText, 
   Globe, List, Package, 
@@ -40,10 +41,20 @@ const SidebarSection = ({ title, children, collapsed }: { title?: string, childr
 
 export function Sidebar({ isOpen }: { isOpen: boolean }) {
   return (
-    <div className={cn(
-      "bg-gray-50 h-full flex flex-col select-none transition-all duration-300 ease-in-out",
-      isOpen ? "w-64 p-2" : "w-0 p-0 overflow-hidden opacity-0"
-    )}>
+    <motion.div
+      initial={false}
+      animate={{ 
+        width: isOpen ? "16rem" : "0rem",
+        padding: isOpen ? "0.5rem" : "0rem",
+        opacity: isOpen ? 1 : 0
+      }}
+      transition={{ 
+        type: "spring", 
+        stiffness: 400, 
+        damping: 40
+      }}
+      className="bg-gray-50 h-full flex flex-col select-none overflow-hidden"
+    >
       <div className="flex-1 no-scrollbar no-drag bg-white p-2 rounded-2xl flex flex-col shadow-md min-w-[15rem]">
         <div className="h-8 drag w-full shrink-0" />
         <div className="flex-1 overflow-y-auto no-scrollbar">
@@ -71,6 +82,6 @@ export function Sidebar({ isOpen }: { isOpen: boolean }) {
           </SidebarSection>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
