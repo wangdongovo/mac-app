@@ -6,7 +6,7 @@ import {
   Layers, Sliders,
   GitGraph, Send,
   Info, Settings,
-  ClipboardList, Image as ImageIcon
+  ClipboardList, Image as ImageIcon, Cloud
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 
@@ -66,6 +66,7 @@ export function Sidebar({ isOpen }: { isOpen: boolean }) {
             <SidebarItem icon={FileText} label="日志" path="/logs" />
             <SidebarItem icon={ClipboardList} label="剪贴板" path="/clipboard" />
             <SidebarItem icon={ImageIcon} label="图片工具" path="/images" />
+            <SidebarItem icon={Cloud} label="Github图床" path="/github" />
           </SidebarSection>
 
           <SidebarSection title="代理">
