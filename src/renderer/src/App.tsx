@@ -5,6 +5,7 @@ import { OverviewPage } from './modules/overview/OverviewPage';
 import { TrafficPage } from './modules/traffic/TrafficPage';
 import { SettingsPage } from './modules/settings/SettingsPage';
 import { ClipboardPage } from './modules/clipboard/ClipboardPage';
+import { ImagePage } from './modules/images/ImagePage';
 import { ComingSoon } from './components/ComingSoon';
 
 const App = () => {
@@ -16,6 +17,7 @@ const App = () => {
           <Route path="overview" element={<OverviewPage />} />
           <Route path="traffic" element={<TrafficPage />} />
           <Route path="clipboard" element={<ClipboardPage />} />
+          <Route path="images" element={<ImagePage />} />
           <Route path="settings" element={<SettingsPage />} />
           <Route path="*" element={<ComingSoon />} />
         </Route>

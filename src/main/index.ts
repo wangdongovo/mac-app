@@ -53,7 +53,7 @@ ipcMain.handle('system:getOverview', async () => {
       const match = stdout.match(/gateway:\s+(.+)/)
       if (match && match[1]) gateway = match[1]
     } catch (e) {
-        // ignore
+      // ignore
     }
 
     const dns: string[] = []
@@ -64,7 +64,7 @@ ipcMain.handle('system:getOverview', async () => {
         if (!dns.includes(m[1])) dns.push(m[1])
       }
     } catch (e) {
-        // ignore
+      // ignore
     }
 
     // 3. Node/NPM
@@ -78,21 +78,21 @@ ipcMain.handle('system:getOverview', async () => {
       const { stdout } = await execAsync('node -v', { env })
       nodeVersion = stdout.trim()
     } catch (e) {
-        // ignore
+      // ignore
     }
 
     try {
       const { stdout } = await execAsync('npm -v', { env })
       npmVersion = stdout.trim()
     } catch (e) {
-        // ignore
+      // ignore
     }
 
     try {
       const { stdout } = await execAsync('npm config get registry', { env })
       npmRegistry = stdout.trim()
     } catch (e) {
-        // ignore
+      // ignore
     }
 
     return {
@@ -113,6 +113,55 @@ ipcMain.handle('system:getOverview', async () => {
     throw error
   }
 })
+
+// Image Cache logic
+let CACHE_DIR: string;
+
+function registerImageHandlers() {
+  CACHE_DIR = path.join(app.getPath('userData'), 'image-cache');
+
+  ipcMain.handle('image:saveToCache', async (_, { fileName, dataUrl }) => {
+    try {
+      await fs.mkdir(CACHE_DIR, { recursive: true });
+      const base64Data = dataUrl.replace(/^data:image\/\w+;base64,/, '');
+      const filePath = path.join(CACHE_DIR, fileName);
+      await fs.writeFile(filePath, base64Data, 'base64');
+      return filePath;
+    } catch (error) {
+      console.error('Failed to save image to cache', error);
+      throw error;
+    }
+  });
+
+  ipcMain.handle('image:getCacheSize', async () => {
+    try {
+      await fs.mkdir(CACHE_DIR, { recursive: true });
+      const files = await fs.readdir(CACHE_DIR);
+      let totalSize = 0;
+      for (const file of files) {
+        const stats = await fs.stat(path.join(CACHE_DIR, file));
+        totalSize += stats.size;
+      }
+      return totalSize;
+    } catch (error) {
+      console.error('Failed to get cache size', error);
+      return 0;
+    }
+  });
+
+  ipcMain.handle('image:clearCache', async () => {
+    try {
+      const files = await fs.readdir(CACHE_DIR);
+      for (const file of files) {
+        await fs.unlink(path.join(CACHE_DIR, file));
+      }
+      return true;
+    } catch (error) {
+      console.error('Failed to clear cache', error);
+      return false;
+    }
+  });
+}
 
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -155,7 +204,10 @@ const createWindow = () => {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow)
+app.on('ready', () => {
+  registerImageHandlers();
+  createWindow();
+})
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits

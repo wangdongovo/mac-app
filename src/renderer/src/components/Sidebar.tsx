@@ -1,12 +1,12 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { 
-  LayoutGrid, Activity, Network, FileText, 
-  Globe, List, Package, 
-  Layers, Sliders, 
-  GitGraph, Send, 
+import {
+  LayoutGrid, Activity, Network, FileText,
+  Globe, List, Package,
+  Layers, Sliders,
+  GitGraph, Send,
   Info, Settings,
-  ClipboardList
+  ClipboardList, Image as ImageIcon
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 
@@ -21,8 +21,8 @@ const SidebarItem = ({ icon: Icon, label, path, collapsed = false }: { icon: any
       active ? "bg-gray-200 text-gray-900" : "text-gray-500 hover:bg-gray-100 hover:text-gray-900",
       collapsed && "justify-center px-2"
     )}
-    title={collapsed ? label : undefined}
-    onClick={() => path && navigate(path)}
+      title={collapsed ? label : undefined}
+      onClick={() => path && navigate(path)}
     >
       <Icon className="w-4 h-4" />
       {!collapsed && <span className="whitespace-nowrap">{label}</span>}
@@ -33,7 +33,7 @@ const SidebarItem = ({ icon: Icon, label, path, collapsed = false }: { icon: any
 const SidebarSection = ({ title, children, collapsed }: { title?: string, children: React.ReactNode, collapsed?: boolean }) => (
   <div className="mb-4">
     {title && !collapsed && <div className="px-4 py-2 text-xs font-semibold text-gray-400">{title}</div>}
-    {title && collapsed && <div className="h-4"></div>} 
+    {title && collapsed && <div className="h-4"></div>}
     <div className="space-y-1">
       {children}
     </div>
@@ -44,14 +44,14 @@ export function Sidebar({ isOpen }: { isOpen: boolean }) {
   return (
     <motion.div
       initial={false}
-      animate={{ 
+      animate={{
         width: isOpen ? "16rem" : "0rem",
         padding: isOpen ? "0.5rem" : "0rem",
         opacity: isOpen ? 1 : 0
       }}
-      transition={{ 
-        type: "spring", 
-        stiffness: 400, 
+      transition={{
+        type: "spring",
+        stiffness: 400,
         damping: 40
       }}
       className="bg-gray-50 h-full flex flex-col select-none overflow-hidden"
@@ -65,6 +65,7 @@ export function Sidebar({ isOpen }: { isOpen: boolean }) {
             <SidebarItem icon={Network} label="连接" path="/connections" />
             <SidebarItem icon={FileText} label="日志" path="/logs" />
             <SidebarItem icon={ClipboardList} label="剪贴板" path="/clipboard" />
+            <SidebarItem icon={ImageIcon} label="图片工具" path="/images" />
           </SidebarSection>
 
           <SidebarSection title="代理">
