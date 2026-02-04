@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Card } from '../../components/Card';
 import {
     Upload, ImageIcon, Download, Trash2,
@@ -17,6 +17,7 @@ export const ImagePage = () => {
     const [targetFormat, setTargetFormat] = useState<'webp' | 'png'>('webp');
     const [cacheSize, setCacheSize] = useState(0);
     const { processImage, isProcessing } = useImageProcessor();
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const updateCacheSize = async () => {
         try {
@@ -32,11 +33,10 @@ export const ImagePage = () => {
         updateCacheSize();
     }, []);
 
-    const onDrop = useCallback(async (e: React.DragEvent) => {
-        e.preventDefault();
-        const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+    const handleFiles = useCallback(async (files: File[]) => {
+        const imageFiles = files.filter(f => f.type.startsWith('image/'));
 
-        for (const file of files) {
+        for (const file of imageFiles) {
             try {
                 const result = await processImage(file, targetFormat, quality);
                 setImages(prev => [result, ...prev]);
@@ -53,6 +53,20 @@ export const ImagePage = () => {
             }
         }
     }, [processImage, targetFormat, quality]);
+
+    const onDrop = useCallback(async (e: React.DragEvent) => {
+        e.preventDefault();
+        const files = Array.from(e.dataTransfer.files);
+        handleFiles(files);
+    }, [handleFiles]);
+
+    const onFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            handleFiles(Array.from(e.target.files));
+            // Reset value to allow selecting the same file again
+            e.target.value = '';
+        }
+    };
 
     const handleClearCache = async () => {
         // @ts-ignore
@@ -145,15 +159,24 @@ export const ImagePage = () => {
                     </div>
 
                     <div
+                        onClick={() => fileInputRef.current?.click()}
                         onDrop={onDrop}
                         onDragOver={(e) => e.preventDefault()}
-                        className="group relative border-2 border-dashed border-gray-200 rounded-2xl p-8 transition-all hover:border-blue-400 hover:bg-blue-50/30 flex flex-col items-center justify-center text-center space-y-3"
+                        className="group relative border-2 border-dashed border-gray-200 rounded-2xl p-8 transition-all hover:border-blue-400 hover:bg-blue-50/30 flex flex-col items-center justify-center text-center space-y-3 cursor-pointer"
                     >
+                        <input
+                            type="file"
+                            ref={fileInputRef}
+                            className="hidden"
+                            multiple
+                            accept="image/png, image/jpeg, image/webp"
+                            onChange={onFileSelect}
+                        />
                         <div className="p-4 bg-gray-50 rounded-full group-hover:bg-blue-100 transition-colors">
                             <Upload className="w-8 h-8 text-gray-400 group-hover:text-blue-500" />
                         </div>
                         <div>
-                            <p className="text-sm font-semibold text-gray-700">拖拽图片到这里</p>
+                            <p className="text-sm font-semibold text-gray-700">点击或拖拽图片到这里</p>
                             <p className="text-xs text-gray-500 mt-1">支持 JPG, PNG, WEBP</p>
                         </div>
                     </div>
