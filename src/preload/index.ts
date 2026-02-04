@@ -17,4 +17,11 @@ contextBridge.exposeInMainWorld('electronAPI', {
     getCacheSize: () => ipcRenderer.invoke('image:getCacheSize'),
     clearCache: () => ipcRenderer.invoke('image:clearCache'),
   },
+  v2ray: {
+    connect: (config: any) => ipcRenderer.invoke('v2ray:connect', config),
+    disconnect: () => ipcRenderer.invoke('v2ray:disconnect'),
+    status: () => ipcRenderer.invoke('v2ray:status'),
+    ping: (args: { address: string; port: number }) => ipcRenderer.invoke('v2ray:ping', args),
+    fetchSubscription: (url: string) => ipcRenderer.invoke('v2ray:fetchSubscription', url),
+  },
 });

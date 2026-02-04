@@ -34,7 +34,7 @@ export function MainLayout() {
             </button>
         </motion.div>
         
-        <main className="flex-1 overflow-hidden relative p-2 pt-0">
+        <main className="flex-1 overflow-hidden relative p-2 pt-0 no-drag">
           <Outlet />
         </main>
       </div>

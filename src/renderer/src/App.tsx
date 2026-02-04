@@ -7,6 +7,7 @@ import { SettingsPage } from './modules/settings/SettingsPage';
 import { ClipboardPage } from './modules/clipboard/ClipboardPage';
 import { ImagePage } from './modules/images/ImagePage';
 import { GithubPage } from './modules/github/GithubPage';
+import { V2RayPage } from './modules/v2ray/V2RayPage';
 import { ComingSoon } from './components/ComingSoon';
 
 const App = () => {
@@ -20,6 +21,7 @@ const App = () => {
           <Route path="clipboard" element={<ClipboardPage />} />
           <Route path="images" element={<ImagePage />} />
           <Route path="github" element={<GithubPage />} />
+          <Route path="v2ray" element={<V2RayPage />} />
           <Route path="settings" element={<SettingsPage />} />
           <Route path="*" element={<ComingSoon />} />
         </Route>

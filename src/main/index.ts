@@ -5,6 +5,7 @@ import os from 'node:os'
 import { exec } from 'node:child_process'
 import util from 'node:util'
 import started from 'electron-squirrel-startup'
+import { registerV2RayHandlers } from './v2ray'
 
 const execAsync = util.promisify(exec)
 
@@ -206,6 +207,7 @@ const createWindow = () => {
 // Some APIs can only be used after this event occurs.
 app.on('ready', () => {
   registerImageHandlers();
+  registerV2RayHandlers();
   createWindow();
 })
 

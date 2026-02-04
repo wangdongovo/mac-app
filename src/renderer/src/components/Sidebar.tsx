@@ -6,7 +6,7 @@ import {
   Layers, Sliders,
   GitGraph, Send,
   Info, Settings,
-  ClipboardList, Image as ImageIcon, Cloud
+  ClipboardList, Image as ImageIcon, Cloud, Radio
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 
@@ -70,6 +70,7 @@ export function Sidebar({ isOpen }: { isOpen: boolean }) {
           </SidebarSection>
 
           <SidebarSection title="代理">
+            <SidebarItem icon={Radio} label="V2Ray 节点" path="/v2ray" />
             <SidebarItem icon={Globe} label="代理" path="/proxies" />
             <SidebarItem icon={List} label="规则" path="/rules" />
             <SidebarItem icon={Package} label="资源" path="/resources" />

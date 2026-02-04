@@ -1,0 +1,15 @@
+#!/bin/bash
+echo "V2Ray 5.0.0 (V2Fly, a community-driven edition) Custom (go1.19 darwin/amd64)"
+echo "A unified platform for anti-censorship."
+echo "Command received: $@"
+
+# Simulate some startup logs
+echo "2023/10/27 10:00:00 [Info] main/jsonem: Reading config: $3"
+echo "2023/10/27 10:00:00 [Warning] core: V2Ray 5.0.0 started"
+
+# Loop to keep process alive
+trap "echo 'V2Ray stopping'; exit 0" SIGTERM SIGINT
+
+while true; do
+  sleep 10
+done
